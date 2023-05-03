@@ -1,7 +1,7 @@
 require 'json'
 require 'typhoeus'
 
-users = { mensa_scran: '1541741641060519941', footy_scran: '1320495373769723904' }
+users = ['1541741641060519941', '1320495373769723904'] # mensascran, footyscran
 bearer_token = ENV["TWITTER_BEARER_TOKEN"]
 
 endpoint_url = "https://api.twitter.com/2/users/:id/tweets"
@@ -17,7 +17,7 @@ def get_user_tweets(url, bearer_token, query_params)
     options = {
         method: 'get',
         headers: {
-        "User-Agent" => "v2RubyExampleCode",
+        "User-Agent" => "scranbot",
         "Authorization" => "Bearer #{bearer_token}"
         },
     params: query_params
@@ -28,7 +28,8 @@ def get_user_tweets(url, bearer_token, query_params)
 end
 
 users.each do |id|
-    url = endpoint_url.gsub(':id',id.to_s())
-    response = get_user_tweets(endpoint_url, bearer_token, query_params)
+    url = endpoint_url.gsub(':id', id)
+    p url
+    response = get_user_tweets(url, bearer_token, query_params)
     puts response.code, JSON.pretty_generate(JSON.parse(response.body))
 end
